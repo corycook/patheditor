@@ -45,8 +45,6 @@ private:
 private:
 	std::wstring _ExpandEnvironmentStrings(const std::wstring& sVar);
 	int _GetImageIndex(std::wstring fname);
-	int _GetDLLCount(std::wstring fname);
-	int _GetEXECount(std::wstring fname);
 	int _GetFileCountByExtension(std::wstring fname, std::wstring ext);
 
 public:
