@@ -39,14 +39,18 @@ private:
 	HWND m_hWnd;
 
 	StringListT m_str_list;
+	StringListT m_str_counts;
 	CPathReader m_reader;
 
 private:
 	std::wstring _ExpandEnvironmentStrings(const std::wstring& sVar);
-	int _GetImageIndex( std::wstring fname);
+	int _GetImageIndex(std::wstring fname);
+	int _GetDLLCount(std::wstring fname);
+	int _GetEXECount(std::wstring fname);
+	int _GetFileCountByExtension(std::wstring fname, std::wstring ext);
 
 public:
-	void Init( HWND hWnd, HIMAGELIST hImageList, HKEY hKey, LPCTSTR lpszKeyName, LPCTSTR lpszValueName);
+	void Init(HWND hWnd, HIMAGELIST hImageList, HKEY hKey, LPCTSTR lpszKeyName, LPCTSTR lpszValueName);
 	bool Commit();
 
 	void AddPath();
