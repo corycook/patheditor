@@ -117,7 +117,8 @@ void CPathListCtrl::Init(HWND hWnd, HIMAGELIST hImageList, HKEY hKey, LPCTSTR lp
 		wchar_t * buffer = new wchar_t[256]();
 		int dllcnt = _GetFileCountByExtension(m_str_list[count], L"dll");
 		int execnt = _GetFileCountByExtension(m_str_list[count], L"exe");
-		wsprintf(buffer, L"Dll Count: %d, EXE Count: %d", dllcnt, execnt);
+		int batcnt = _GetFileCountByExtension(m_str_list[count], L"bat");
+		wsprintf(buffer, L"%d DLLs, %d EXEs, %d BATs", dllcnt, execnt, batcnt);
 		m_str_counts.push_back(buffer);
 	}
 }
