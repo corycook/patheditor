@@ -81,6 +81,14 @@ int CPathListCtrl::_GetFileCountByExtension(std::wstring fname, std::wstring ext
 	return i;
 }
 
+std::wstring CPathListCtrl::_GetCountStr(std::wstring fname) {
+	wchar_t * buffer = new wchar_t[256]();
+	int dllcnt = _GetFileCountByExtension(fname, L"dll");
+	int execnt = _GetFileCountByExtension(fname, L"exe");
+	int batcnt = _GetFileCountByExtension(fname, L"bat");
+	wsprintf(buffer, L"%d DLLs, %d EXEs, %d BATs", dllcnt, execnt, batcnt);
+	return buffer;
+}
 void CPathListCtrl::Init(HWND hWnd, HIMAGELIST hImageList, HKEY hKey, LPCTSTR lpszKeyName, LPCTSTR lpszValueName)
 {
 	m_hWnd = hWnd;
@@ -112,12 +120,7 @@ void CPathListCtrl::Init(HWND hWnd, HIMAGELIST hImageList, HKEY hKey, LPCTSTR lp
 	{
 		lvItem.iItem = static_cast<int>(count);
 		ListView_InsertItem(m_hWnd, &lvItem);
-		wchar_t * buffer = new wchar_t[256]();
-		int dllcnt = _GetFileCountByExtension(m_str_list[count], L"dll");
-		int execnt = _GetFileCountByExtension(m_str_list[count], L"exe");
-		int batcnt = _GetFileCountByExtension(m_str_list[count], L"bat");
-		wsprintf(buffer, L"%d DLLs, %d EXEs, %d BATs", dllcnt, execnt, batcnt);
-		m_str_counts.push_back(buffer);
+		m_str_counts.push_back(_GetCountStr(m_str_list[count]));
 	}
 }
 
@@ -149,6 +152,8 @@ void CPathListCtrl::AddPath()
 		strPath.resize(strPath.find_first_of(L'\0'));
 		m_str_list.push_back(strPath);
 
+		m_str_counts.push_back(_GetCountStr(strPath));
+
 		LVITEM lvItem = { 0 };
 		lvItem.mask = LVIF_TEXT | LVIF_STATE;
 		lvItem.iItem = ListView_GetItemCount(m_hWnd);
@@ -179,6 +184,7 @@ void CPathListCtrl::EditPath()
 		pathName.resize(pathName.find_first_of(L'\0'));
 
 		m_str_list[iItem] = pathName;
+		m_str_counts[iItem] = _GetCountStr(pathName);
 		ListView_Update(m_hWnd, iItem);
 	}
 }
@@ -200,8 +206,9 @@ void CPathListCtrl::RemovePath()
 	int iItem = ListView_GetNextItem(m_hWnd, -1, LVNI_SELECTED);
 	if (iItem == -1)
 		return;
+	m_str_list.erase(m_str_list.begin() + iItem);
+	m_str_counts.erase(m_str_counts.begin() + iItem);
 
-	m_str_list.erase(std::find(m_str_list.begin(), m_str_list.end(), m_str_list[iItem]));
 	ListView_DeleteItem(m_hWnd, iItem);
 	ListView_Update(m_hWnd, iItem);
 
@@ -236,6 +243,7 @@ void CPathListCtrl::MoveUp()
 		return;
 
 	m_str_list[iItem].swap(m_str_list[iItem - 1]);
+	m_str_counts[iItem].swap(m_str_counts[iItem - 1]);
 	ListView_Update(m_hWnd, iItem);
 	ListView_Update(m_hWnd, iItem - 1);
 	ListView_SetItemState(m_hWnd, iItem - 1, LVNI_SELECTED, LVNI_SELECTED);
@@ -249,6 +257,7 @@ void CPathListCtrl::MoveDown()
 		return;
 
 	m_str_list[iItem].swap(m_str_list[iItem + 1]);
+	m_str_counts[iItem].swap(m_str_counts[iItem + 1]);
 	ListView_Update(m_hWnd, iItem);
 	ListView_Update(m_hWnd, iItem + 1);
 	ListView_SetItemState(m_hWnd, iItem + 1, LVNI_SELECTED, LVNI_SELECTED);

@@ -46,6 +46,7 @@ private:
 	std::wstring _ExpandEnvironmentStrings(const std::wstring& sVar);
 	int _GetImageIndex(std::wstring fname);
 	int _GetFileCountByExtension(std::wstring fname, std::wstring ext);
+	std::wstring _GetCountStr(std::wstring fname);
 
 public:
 	void Init(HWND hWnd, HIMAGELIST hImageList, HKEY hKey, LPCTSTR lpszKeyName, LPCTSTR lpszValueName);
