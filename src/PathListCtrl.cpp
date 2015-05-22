@@ -71,8 +71,6 @@ int CPathListCtrl::_GetFileCountByExtension(std::wstring fname, std::wstring ext
 		return 0;
 	std::wstring pathName = _ExpandEnvironmentStrings(fname).append(L"\\*.").append(ext);
 	HANDLE h = FindFirstFile(pathName.c_str(), &d);
-	if (h == INVALID_HANDLE_VALUE)
-		return 0;
 	while (h != INVALID_HANDLE_VALUE) {
 		++i;
 		if (!FindNextFile(h, &d)) {
